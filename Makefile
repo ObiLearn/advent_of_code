@@ -9,7 +9,7 @@ runall = $(foreach var,$(NUMBERS), $(var)a_run $(var)b_run)
 
 run: $(runall)
 
-%:%.cpp
+%::%.cpp
 	g++ -std=c++17 $(extra) -o $@ $^
 
 %_run: %_task

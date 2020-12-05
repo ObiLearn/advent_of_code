@@ -16,6 +16,7 @@ int main() {
         for (auto const& j : numbers) {
             if ( i + j == 2020) {
                 std::cout << i << " " << j << " " << i * j << "\n";
+                return 0;
             }
         }
     }

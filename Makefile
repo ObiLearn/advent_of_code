@@ -8,13 +8,14 @@ targets = $(foreach var,$(NUMBERS), $(var)a_task $(var)b_task)
 runall = $(foreach var,$(NUMBERS), $(var)a_run $(var)b_run)
 
 run: $(runall)
+build: $(targets)
 
 %::%.cpp
 	g++ -std=c++17 $(extra) -o $@ $^
 
 %_run: %_task
-	@echo "running $^ ####################################################"
-	./$^ < $(subst b_task,,$(subst a_task,,$^))_input
+	@echo "running $< ####################################################"
+	./$< < $(subst b_task,,$(subst a_task,,$<))_input
 
 .PHONY: clean
 clean:

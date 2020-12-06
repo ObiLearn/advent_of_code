@@ -1,13 +1,13 @@
 package extio
 
 import (
-    "io"
+	"io"
 )
 
 func ForInputLine(cb func(string)) error {
 	reader, err := PipeReader()
 	if err != nil {
-        return err
+		return err
 	}
 
 	for {
@@ -18,44 +18,44 @@ func ForInputLine(cb func(string)) error {
 				//break loop on EOF
 				break
 			} else {
-                return err
+				return err
 			}
 		}
 
 		cb(line)
 	}
 
-    return nil
+	return nil
 }
 
 func InputLines() (<-chan string, <-chan error) {
-    out := make(chan string)
-    errs := make(chan error)
+	out := make(chan string)
+	errs := make(chan error)
 
-    reader, err := PipeReader()
+	reader, err := PipeReader()
 	if err != nil {
-        errs <- err
-        close(out)
-        close(errs)
+		errs <- err
+		close(out)
+		close(errs)
 		return out, errs
 	}
 
-    go func() {
-        defer close(out)
-        defer close(errs)
+	go func() {
+		defer close(out)
+		defer close(errs)
 
-        for {
-            line, err := Readln(reader)
+		for {
+			line, err := Readln(reader)
 
-            if err != nil {
-                if err != io.EOF {
-                    errs <- err
-                }
-                break
-            }
-            out <- line;
-        }
-    }()
+			if err != nil {
+				if err != io.EOF {
+					errs <- err
+				}
+				break
+			}
+			out <- line
+		}
+	}()
 
-    return out, errs
+	return out, errs
 }

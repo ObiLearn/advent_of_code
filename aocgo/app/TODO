@@ -1,0 +1,9 @@
+Tim Heckman  8:39 PM
+
+@Jan Christoph Uhde have another goroutine that you start first to collect the
+items sent over the unbuffered channel. Once that channel is closed, write the
+final results to another channel that main is blocking on. So you can use many
+goroutines to do the work, use a single goroutine to receive the results of
+each task and collect them. And once all results have been received, send the
+final result to main. This could be done with a set of unbuffered channels.
+@Jan Christoph Uhde I hope that helps!

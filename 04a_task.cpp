@@ -78,6 +78,9 @@ std::vector<std::string> prefixes = { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", 
 std::set<std::string> required = { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
 
     std::vector<std::string> details;
     std::string line;

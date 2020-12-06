@@ -23,6 +23,9 @@ std::size_t toId(std::string const& in) {
 }
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     std::string line;
     std::size_t max = 0;
     std::vector<size_t> ids;

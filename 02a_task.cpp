@@ -84,10 +84,11 @@ struct entry {
 };
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
     ext::util::scoped_timer timer{};
 
-    std::ios_base::sync_with_stdio(false);
     std::vector<entry> entries(1000);
     std::string line;
 

@@ -163,6 +163,8 @@ std::size_t checkItem(std::string const& item){
 
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
     std::vector<std::string> details;
     std::string line;

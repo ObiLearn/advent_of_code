@@ -5,6 +5,9 @@
 #include <ext/math/math_types.hpp>
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     std::string line;
     std::vector<std::string> string_array;
     std::size_t n = 0;

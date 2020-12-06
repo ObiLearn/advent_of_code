@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if test -z $@ ; then
+    tasks=( '06a' )
+else
+    tasks=( "$@" )
+fi
+
+for task in "${tasks[@]}"; do
+    length=${#task}
+    length=$(( length - 1 ))
+    input=${task:0:length}
+    input="../${input}_input"
+
+    go run app/"$task"_main.go < $input
+done
+

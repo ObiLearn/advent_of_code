@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -55,12 +54,11 @@ func main() {
 
 	result := 0
 	for value := range intermediateResults {
-		fmt.Println(value)
 		result += value
 	}
 
 	end := time.Now()
 	log.Printf("total time %s", end.Sub(start))
-
-	log.Printf("the restult is: %v", result)
+	
+    log.Printf("the restult is: %v", result)
 }

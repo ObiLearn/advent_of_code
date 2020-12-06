@@ -59,6 +59,6 @@ func main() {
 
 	end := time.Now()
 	log.Printf("total time %s", end.Sub(start))
-	
-    log.Printf("the restult is: %v", result)
+
+	log.Printf("the restult is: %v", result)
 }

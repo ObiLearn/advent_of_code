@@ -2,6 +2,11 @@
 #include <iostream>
 #include <algorithm>
 
+#include <charconv>
+#include <ios>
+
+#include <ext/util/scoped_timer.hpp>
+
 struct candidate {
     std::size_t length;
     std::string::value_type const* pointer;
@@ -80,7 +85,10 @@ struct entry {
 
 int main() {
 
-    std::vector<entry> entries;
+    ext::util::scoped_timer timer{};
+
+    std::ios_base::sync_with_stdio(false);
+    std::vector<entry> entries(1000);
     std::string line;
 
     while(std::getline(std::cin, line)) {
@@ -93,9 +101,9 @@ int main() {
         entries.push_back( entry{
                 low, high, c, std::string(parts[4])
         });
-
-
     }
+
+    timer.add_step("input parsed");
 
     std::size_t result = 0;
     for(auto const& entry : entries) {

@@ -1,4 +1,5 @@
 ifeq ($(origin DEBUG), undefined)
+	extra += -O3
 else
 	extra += -O0 -ggdb
 endif

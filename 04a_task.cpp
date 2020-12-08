@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <set>
 
-#include <ext/util/show.hpp>
+#include <ext/util/pretty.hpp>
 
 struct candidate {
     std::size_t length;

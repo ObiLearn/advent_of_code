@@ -1,11 +1,9 @@
 #include <algorithm>
-#include <bits/c++config.h>
 #include <iterator>
 #include <optional>
 #include <string>
 #include <iostream>
 
-//#include <ext/util/show.hpp>
 #include <ext/util/scoped_timer.hpp>
 #include <set>
 
@@ -27,7 +25,6 @@ int main() {
             current_set.clear();
             new_set.clear();
             first = true;
-            //std::cout << "#################\n";
             continue;
         }
 
@@ -51,10 +48,6 @@ int main() {
             new_set.clear();
             current_set = std::move(intersected);
         }
-
-        //using ext::util::operator<<;
-        //std::cout << current_set << std::endl;
-
     }
 
 

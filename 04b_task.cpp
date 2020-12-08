@@ -4,7 +4,6 @@
 #include <set>
 #include <charconv>
 
-#include <ext/util/show.hpp>
 #include <ext/util/string.hpp>
 
 struct candidate {

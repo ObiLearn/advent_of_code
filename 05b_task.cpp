@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 
-#include <ext/util/show.hpp>
+#include <ext/util/pretty.hpp>
 
 std::size_t toId(std::string const& in) {
     std::size_t rv = 0;
@@ -43,6 +43,6 @@ int main() {
     auto it = std::find(slots.begin()+1, slots.end(), 1); // find first seat
     it = std::find(it, slots.end(), 0); // find empty seat
 
-    using ext::util::operator<<;
+    using ext::util::pretty::operator<<;
     std::cout << "\nresult:" << std::distance(slots.begin(), it) << "\n";
 }

@@ -1,18 +1,12 @@
-#include <bits/c++config.h>
-#include <cmath>
-#include <iterator>
-#include <string_view>
-#include <vector>
 #include <iostream>
-#include <algorithm>
+
 #include <string>
+#include <string_view>
+#include <charconv>
+
 #include <unordered_map>
 #include <unordered_set>
 #include <set>
-
-#include <charconv>
-#include <ios>
-#include <cassert>
 
 #include <ext/util/pretty.hpp>
 #include <ext/util/scoped_timer.hpp>
@@ -49,6 +43,10 @@ int main() {
         str_to_id[item[0]] = id_to_str.size() - 1;
     }
     timer.add_step("strings mapped to ids");
+    //using ext::util::pretty::operator<<;
+    //std::cout << id_to_str << std::endl;
+    //std::cout << str_to_id << std::endl;
+
 
     using translation_t = std::vector<std::pair<std::size_t,std::size_t>>;
     std::vector<translation_t> translations(id_to_str.size());
@@ -59,52 +57,77 @@ int main() {
 
         translation_t translation;
         for(std::size_t i = 1; i < item.size(); ++i) {
-            std::size_t num;
+            std::size_t num = 0;
             auto const & str = item[i];
             auto res = std::from_chars(str.data(), str.data() + str.size(), num);
+
+            if(num == 0 && res.ec == std::errc::invalid_argument) {
+                //std::cout << "data: '" << str << "' can not be splitted " << num << std::endl;
+                auto id = str_to_id[str];
+                auto str = id_to_str[id];
+                //std::cout << "using id:  " << id << " " << str << std::endl;
+                translation.emplace_back(std::pair<std::size_t, std::size_t>{str_to_id[str], num});
+                continue;
+            }
+
             std::string_view name(res.ptr+1, str.size() - 1 - std::distance(str.data(), res.ptr));
-
             //std::cout << "name: '" << name << "' num: " << num << std::endl;
-
             translation.emplace_back(std::pair<std::size_t, std::size_t>{str_to_id[name], num});
         }
-        //using ext::util::pretty::operator<<;
+        using ext::util::pretty::operator<<;
         //std::cout << translation << std::endl;
         translations[str_to_id[item[0]]] = std::move(translation);
     }
     timer.add_step("translations created");
+    //std::cout << "translation: " << translations << std::endl;
 
     std::vector<std::set<std::size_t>> contained_in_map(translations.size());
     for(std::size_t found_in=1; found_in < translations.size(); ++found_in) {
         for(auto const& pair : translations[found_in]) {
+            if( pair.first == 0 ) continue; // invalid does not contain anything;
+            //std::cout << found_in << std::endl;
             contained_in_map[pair.first].insert(found_in);
         }
     }
     timer.add_step("created mapping from id to set which contains id ");
+    //std::cout << "cointained in map: " << contained_in_map << std::endl;
 
+    //for (std::size_t index = 0; index < contained_in_map.size(); ++index)  {
+    //    std::cout << id_to_str[index] << " contained in : ";
+    //    for(auto item : contained_in_map[index]) {
+    //        std::cout << id_to_str[item] << ", ";
+    //    }
+    //    std::cout << "\n";
+    //}
 
     std::unordered_set<std::size_t> reaches;
     std::unordered_set<std::size_t> expand;
     expand.insert(str_to_id["shiny gold"]);
+    //std::cout << "start id: " << *expand.begin() << std::endl;
 
-    using ext::util::pretty::operator<<;
-
-    std::size_t last_size = 1;
-
-    while (reaches.size() != last_size) {
+    std::size_t last_size = 0;
+    while (true) {
         last_size = reaches.size();
         std::unordered_set<std::size_t> expand_next;
 
         for(auto item : expand) {
+            //std::cout << " -item- " << item << std::endl;
             for (auto id : contained_in_map[item]) {
-                if(reaches.find(item) == reaches.end()) {
+                //std::cout << " -id- " << id << std::endl;
+                if(reaches.empty() || reaches.find(item) == reaches.end()) {
                     expand_next.insert(id);
+                    //using ext::util::pretty::operator<<;
+                    //std::cout << expand_next << std::endl;
                 }
             }
             reaches.insert(item);
         }
 
         expand = std::move(expand_next);
+        if (reaches.size() == last_size) {
+            break;
+        }
+        //std::cout << " -- next --  " << reaches.size() << " != " << last_size << std::endl;
     }
     timer.add_step("graph expanded");
 

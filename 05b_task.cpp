@@ -35,7 +35,7 @@ int main() {
         max=std::max(max, ids.back());
     }
 
-    std::vector<short> slots(max, 0);
+    std::vector<short> slots(max+1, 0);
     for (auto id : ids) {
         slots[id]=1;
     }

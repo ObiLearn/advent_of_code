@@ -1,7 +1,11 @@
 ifeq ($(origin DEBUG), undefined)
 	extra += -O3
+	buildtype = .debug
+	buildtype_inactive = .release
 else
 	extra += -O0 -ggdb -fsanitize=address
+	buildtype = .release
+	buildtype_inactive = .debug
 endif
 
 includes = -I./lib/basics/include \
@@ -14,8 +18,8 @@ runall = $(foreach var,$(NUMBERS), run$(var)a run$(var)b)
 run: $(runall)
 build: $(targets)
 
-.PHONY: deps
-deps: lib/basics lib/math
+.deps: lib/basics lib/math
+	echo $^ > $@
 lib:
 	mkdir lib
 lib/basics: lib
@@ -23,7 +27,11 @@ lib/basics: lib
 lib/math: lib
 	git clone https://github.com/extcpp/math lib/math
 
-task_%:: %_task.cpp deps
+$(buildtype):
+	rm -fr $(buildtype_inactive)
+	touch $(buildtype)
+
+task_%:: %_task.cpp .deps $(buildtype)
 	g++ -std=c++17 $(CXXFLAGS) $(includes) $(extra) -o $@ $<
 
 run%: task_%

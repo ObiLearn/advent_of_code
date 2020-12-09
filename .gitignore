@@ -1,2 +1,6 @@
 task_*
 lib
+
+.deps
+.debug
+.release

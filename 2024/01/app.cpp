@@ -4,51 +4,28 @@
 #include <iostream>
 #include <map>
 #include <ranges>
-#include <string_view>
 #include <unordered_set>
 #include <vector>
 
 std::tuple<std::vector<int>, std::vector<int>> parse_input() {
-
     std::vector<int> vec_a, vec_b;
 
     util::input_by_line([&](std::string const& line) -> void {
+        // vec_a
         auto it = std::find_if(line.begin(), line.end(), [](const char x) {
             return std::isspace(x);
         });
-        {
-            if (it == line.end())
-                throw std::runtime_error("invalid input");
-
-            // NOTE - unfortunately `std::from_chars` is not able to take string iterator.
-            // imo it should, I might sit on a broken implementation.
-            //int var;
-            //auto [ptr, ec] = std::from_chars(line.begin(), it, var); // <<-- no matching function to call
-            /*
-             * /usr/include/c++/14/charconv:552:5: note:   template argument deduction/substitution failed:
-               app.cpp:26:56: note:   cannot convert ‘(& line)->std::__cxx11::basic_string<char>::begin()’ (type ‘std::__cxx11::basic_string<char>::const_iterator’) to type ‘const char*’
-                  26 |             auto [ptr, ec] = std::from_chars(line.begin(), it, var); // <<-- no matching function to call
-             */
-            // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p2007r0.html
-
-            auto offset = std::distance(line.begin(), it);
-            char const* begin = line.data();
-            std::string_view view_a(begin, offset);
-            vec_a.push_back(util::int_from_view(view_a));
-        }
-
+        if (it == line.end())
+            throw std::runtime_error("invalid input");
+        vec_a.push_back(util::int_from_iterators(line.begin(), it));
+        // vec_b
         it = std::find_if_not(it, line.end(), [](const char x) {
             return std::isspace(x);
         });
-        {
-            if (it == line.end())
-                throw std::runtime_error("invalid input");
-            auto offset = std::distance(line.begin(), it);
-            char const* begin = line.data() + offset;
-            std::string_view view_b(begin, line.size() - offset);
-            vec_b.push_back(util::int_from_view(view_b));
-        }
-
+        if (it == line.end())
+            throw std::runtime_error("invalid input");
+        vec_b.push_back(util::int_from_iterators(it, line.end()));
+        // done
         return;
     });
 
@@ -57,8 +34,8 @@ std::tuple<std::vector<int>, std::vector<int>> parse_input() {
 
 int main() {
     auto [v1, v2] = parse_input();
-    std::sort(v1.begin(), v1.end());
-    std::sort(v2.begin(), v2.end());
+    std::ranges::sort(v1);
+    std::ranges::sort(v2);
     // part 1 - simple
     {
         int res = 0;
@@ -74,6 +51,7 @@ int main() {
         auto res = std::ranges::fold_right(tmp, 0, std::plus<>());
         std::cout << res << std::endl;
     }
+    // no need to sort
     // part 2 - simple
     {
         std::map<int, int> m;

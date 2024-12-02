@@ -8,13 +8,17 @@
 #include <string_view>
 #include <thread>
 #include <format>
+#include <iostream>
 
 namespace util {
 
-inline int int_from_chars(char const* begin, char const* end) {
+inline int int_from_chars(char const* begin, char const* end, bool check_ptr = true) {
     int num;
+    std::string_view ar(begin, std::distance(begin,end));
     auto [ptr, ec] = std::from_chars(begin, end, num);
     if (ec == std::errc()) return num;
+    if (check_ptr && ptr != end)
+        throw std::runtime_error("input not fully matched");
 
     std::string_view arg(begin, std::distance(begin,end));
     auto err = std::make_error_code(ec);
@@ -59,6 +63,15 @@ inline void input_by_line(std::invocable<std::string const&> auto const& cb) {
 // for debuging
 inline void sleep_for_secs(int secs) {
     std::this_thread::sleep_for(std::chrono::seconds{secs});
+}
+
+template <typename T, typename A>
+inline void print_vec(std::string what, std::vector<T,A> vec)
+{
+    // std::println("{}: {}", what, vec); // it could be so easy...
+    std::cout << what << ": ";
+    for (auto const& item : vec) std::cout << item << " ";
+    std::cout << "\n";
 }
 
 } //namespace util

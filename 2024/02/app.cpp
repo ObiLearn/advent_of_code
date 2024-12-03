@@ -61,4 +61,90 @@ int main() {
         }
         std::cout << "result part 1: " << res << std::endl;
     }
+    // part 2 - ranges unoptimized
+    /*
+    {
+        auto check_range = [](std::ranges::random_access_range auto const& vec) {
+            if(vec.size() == 0)
+                return false;
+            if(vec.size() == 1)
+                return true;
+
+            int last = vec[0];
+            bool asc = vec[0] < vec[1];
+            for (auto it = vec.begin()+1; it != vec.end(); ++it )
+            {
+                auto curr = *it;
+                if (asc && (curr < last)) return false;
+                if (!asc && (curr > last)) return false;
+
+                int abs = std::abs(curr-last);
+                if (abs < 1 || abs > 3)
+                    return false;
+
+                last = curr;
+            }
+            return true;
+        };
+
+        int res = 0;
+        for (auto const& vec : vecs) {
+            if (check_range(vec))
+                res += 1;
+            else {
+                for(std::size_t i = 0; i < vec.size(); ++i) {
+                    const auto filter_func = [&](auto &&pair){ return std::get<0>(pair) != i; };
+                    auto view = vec | std::views::enumerate | std::views::filter(filter_func) | std::views::values;  // <-- only bidi range
+                    if (check_range(view)) {
+                        res += 1;
+                        break;
+                    }
+                }
+            }
+        }
+        std::cout << "result part 2: " << res << std::endl;
+    }
+    */
+    // part 2 - unoptimized copy:(
+    {
+        auto check_range = [](std::ranges::random_access_range auto const& vec) {
+            if(vec.size() == 0)
+                return false;
+            if(vec.size() == 1)
+                return true;
+
+            int last = vec[0];
+            bool asc = vec[0] < vec[1];
+            for (auto it = vec.begin()+1; it != vec.end(); ++it )
+            {
+                auto curr = *it;
+                if (asc && (curr < last)) return false;
+                if (!asc && (curr > last)) return false;
+
+                int abs = std::abs(curr-last);
+                if (abs < 1 || abs > 3)
+                    return false;
+
+                last = curr;
+            }
+            return true;
+        };
+
+        int res = 0;
+        for (auto const& vec : vecs) {
+            if (check_range(vec))
+                res += 1;
+            else {
+                for(std::size_t i = 0; i < vec.size(); ++i) {
+                    auto copy = vec;
+                    copy.erase(copy.begin() + i);
+                    if (check_range(copy)) {
+                        res += 1;
+                        break;
+                    }
+                }
+            }
+        }
+        std::cout << "result part 2: " << res << std::endl;
+    }
 }

@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <string_view>
 #include <thread>
+#include <vector>
 
 namespace util {
 
@@ -51,7 +52,7 @@ inline int int_from_iterators(std::string::const_iterator begin, std::string::co
     return int_from_chars(&*begin, &*end); // hack hack
 }
 
-inline void input_by_line(std::invocable<std::string const&> auto const& cb) {
+inline void input_by_line(std::invocable<std::string&> auto const& cb) {
     // use memory mapped files for real speed
     std::filesystem::path path = std::filesystem::current_path() / "input.txt";
     std::ifstream ifs(path, std::ios::in);
@@ -76,6 +77,14 @@ inline std::string read_file() {
     str.assign((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 
     return str;
+}
+
+inline std::vector<std::string> read_lines() {
+    std::vector<std::string> lines;
+    input_by_line([&lines](std::string& line){
+        lines.push_back(std::move(line));
+    });
+    return lines;
 }
 
 // for debuging

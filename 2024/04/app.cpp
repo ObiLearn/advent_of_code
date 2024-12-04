@@ -48,6 +48,45 @@ int solve_part_1(std::vector<std::string> const& input) {
     return res;
 }
 
+int check_pos_part2(
+    std::vector<std::string> const& m, std::size_t x, std::size_t y, std::size_t max_x, std::size_t max_y) {
+    if (m[y][x] != 'A')
+        return 0;
+    // M.S
+    // .A.
+    // M.S
+    if (m[y - 1][x - 1] == 'M' && m[y - 1][x + 1] == 'S' && m[y + 1][x - 1] == 'M' && m[y + 1][x + 1] == 'S')
+        return 1;
+    // S.S
+    // .A.
+    // M.M
+    if (m[y - 1][x - 1] == 'S' && m[y - 1][x + 1] == 'S' && m[y + 1][x - 1] == 'M' && m[y + 1][x + 1] == 'M')
+        return 1;
+    // M.M
+    // .A.
+    // S.S
+    if (m[y - 1][x - 1] == 'M' && m[y - 1][x + 1] == 'M' && m[y + 1][x - 1] == 'S' && m[y + 1][x + 1] == 'S')
+        return 1;
+    // S.M
+    // .A.
+    // S.M
+    if (m[y - 1][x - 1] == 'S' && m[y - 1][x + 1] == 'M' && m[y + 1][x - 1] == 'S' && m[y + 1][x + 1] == 'M')
+        return 1;
+    return 0;
+};
+
+int solve_part_2(std::vector<std::string> const& input) {
+    int res = 0;
+    auto max_y = input.size();
+    auto max_x = input.front().size();
+    for (int y = 1; y < max_y - 1; ++y) {
+        for (int x = 1; x < max_x - 1; ++x) {
+            res += check_pos_part2(input, x, y, max_x, max_y);
+        }
+    }
+    return res;
+}
+
 int main() {
     auto input = util::read_lines();
     // part 1
@@ -57,7 +96,7 @@ int main() {
     }
     // part 2
     {
-        auto res = solve_part_1(input);
+        auto res = solve_part_2(input);
         std::cout << "part 2 result: " << res << std::endl;
     }
 }

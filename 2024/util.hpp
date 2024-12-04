@@ -17,12 +17,14 @@ inline int int_from_chars(char const* begin, char const* end, bool check_ptr = t
     std::string_view ar(begin, std::distance(begin,end));
     auto [ptr, ec] = std::from_chars(begin, end, num);
     if (ec == std::errc()) return num;
+    else {
+        std::string_view arg(begin, std::distance(begin,end));
+        auto err = std::make_error_code(ec);
+        throw std::invalid_argument(std::format("ERROR: `{}` - given argument: `{}`", err.message(), arg));
+    }
+
     if (check_ptr && ptr != end)
         throw std::runtime_error("input not fully matched");
-
-    std::string_view arg(begin, std::distance(begin,end));
-    auto err = std::make_error_code(ec);
-    throw std::invalid_argument(std::format("ERROR: `{}` - given argument: `{}`", err.message(), arg));
 }
 
 inline int int_from_view(std::string_view view) {
@@ -30,7 +32,7 @@ inline int int_from_view(std::string_view view) {
 }
 
 inline int int_from_iterators(std::string::const_iterator begin, std::string::const_iterator end) {
-    // NOTE - unfortunately `std::from_chars` is not able to take string iterator.
+    // NOTE - unfortunately `std::from_chars` is not able to take string iterators.
     // imo it should, I might sit on a broken implementation.
     //int var;
     //auto [ptr, ec] = std::from_chars(line.begin(), it, var); // <<-- no matching function to call
@@ -48,6 +50,7 @@ inline int int_from_iterators(std::string::const_iterator begin, std::string::co
 }
 
 inline void input_by_line(std::invocable<std::string const&> auto const& cb) {
+    // use memory mapped files for real speed
     std::filesystem::path path = std::filesystem::current_path() / "input.txt";
     std::ifstream ifs(path, std::ios::in );
     if(!ifs.is_open()) throw std::runtime_error("could not open input.txt");

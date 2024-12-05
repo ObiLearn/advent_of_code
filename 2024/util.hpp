@@ -81,7 +81,7 @@ inline std::string read_file() {
 
 inline std::vector<std::string> read_lines() {
     std::vector<std::string> lines;
-    input_by_line([&lines](std::string& line){
+    input_by_line([&lines](std::string& line) {
         lines.push_back(std::move(line));
     });
     return lines;

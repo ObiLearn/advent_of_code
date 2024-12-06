@@ -52,9 +52,8 @@ inline int int_from_iterators(std::string::const_iterator begin, std::string::co
     return int_from_chars(&*begin, &*end); // hack hack
 }
 
-inline void input_by_line(std::invocable<std::string&> auto const& cb) {
+inline void input_by_line(std::invocable<std::string&> auto const& cb, std::filesystem::path path = std::filesystem::current_path() / "input.txt" ) {
     // use memory mapped files for real speed
-    std::filesystem::path path = std::filesystem::current_path() / "input.txt";
     std::ifstream ifs(path, std::ios::in);
     if (!ifs.is_open())
         throw std::runtime_error("could not open input.txt");
@@ -66,8 +65,7 @@ inline void input_by_line(std::invocable<std::string&> auto const& cb) {
     return;
 }
 
-inline std::string read_file() {
-    std::filesystem::path path = std::filesystem::current_path() / "input.txt";
+inline std::string read_file(std::filesystem::path path = std::filesystem::current_path() / "input.txt") {
     std::ifstream ifs(path);
     std::string str;
 
@@ -79,11 +77,11 @@ inline std::string read_file() {
     return str;
 }
 
-inline std::vector<std::string> read_lines() {
+inline std::vector<std::string> read_lines(std::filesystem::path path = std::filesystem::current_path() / "input.txt") {
     std::vector<std::string> lines;
     input_by_line([&lines](std::string& line) {
         lines.push_back(std::move(line));
-    });
+    }, std::move(path));
     return lines;
 }
 
